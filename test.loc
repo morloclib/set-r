@@ -1,0 +1,4 @@
+module test-set-r (test)
+
+import set.test (test)
+import set-r

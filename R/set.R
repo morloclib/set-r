@@ -23,7 +23,17 @@ morloc_packSet <- function(xs) {
     result
 }
 
+# A set has no order, so the order of its elements is unspecified in every
+# form (COLL-6). Its wire form is sorted anyway: @hash and @eq read the wire
+# form, and equal sets must hash and compare equal in every language, however
+# each was built.
 morloc_unpackSet <- function(s) {
+    # NA (an absent optional) sorts first, as an empty optional does in C++.
+    if (length(s) == 0) return(s)
+    if (is.atomic(s)) return(s[order(s, na.last = FALSE, method = "radix")])
+    if (all(vapply(s, function(x) is.atomic(x) && length(x) == 1L, logical(1)))) {
+        return(s[order(unlist(s), na.last = FALSE, method = "radix")])
+    }
     s
 }
 
@@ -185,4 +195,8 @@ morloc_safeFold1_set <- function(f, s) {
 
 morloc_emptySet <- function() {
     list()
+}
+
+morloc_mconcat_set <- function(xss) {
+    unique(unlist(unname(xss), recursive = FALSE))
 }

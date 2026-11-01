@@ -3,7 +3,7 @@ module set-r (*)
 import set
 import root-r
 
-type R => (Set a) = "list" a
+type R => (Set a) = "set" a
 
 %inline
 source R from "R/set.R"
@@ -46,4 +46,7 @@ instance Semigroup (Set a) where
   source R from "R/set.R" ("morloc_union" as (<>))
 
 instance Monoid (Set a) where
-  source R from "R/set.R" ("morloc_emptySet" as mempty)
+  source R from "R/set.R"
+    ( "morloc_emptySet" as mempty
+    , "morloc_mconcat_set" as mconcat
+    )
